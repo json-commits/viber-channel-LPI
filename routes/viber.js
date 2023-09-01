@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-const fetch = require('node-fetch');
-
 require('dotenv').config();
 const AUTH_TOKEN = process.env.VIBER_AUTH_TOKEN;
 
