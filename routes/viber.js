@@ -5,6 +5,7 @@ const fetch = require('node-fetch');
 
 require('dotenv').config();
 const AUTH_TOKEN = process.env.VIBER_AUTH_TOKEN;
+const USER_ID = process.env.VIBER_USER_ID;
 
 const sheets = require('../models/sheets');
 sheets.authorize().catch(error => console.log(error));
@@ -78,7 +79,7 @@ Date :   ${value[96]}
             body: JSON.stringify(
                 {
                     auth_token: AUTH_TOKEN,
-                    from: "3bCgu4QLv+Yxo+WBuJE8pA==",
+                    from: USER_ID,
                     type: "text",
                     text: message
                 }
