@@ -58,7 +58,7 @@ router.get('/send_message', async (req, res) => {
     let today = new Date();
     let todayString = today.toLocaleDateString("en-US", options);
     let message = `Upcoming Visit(s) [${todayString}]:\n`;
-    let sheetObject = await sheets.getRangeData(`Upcoming Visits!A:DG`);
+    let sheetObject = await sheets.getRangeData(`Upcoming Visits!A:DH`);
     let sheetData = sheetObject.data.values.splice(1);
     // console.log(sheetData);
     for (const valueIndex in sheetData) {
@@ -69,7 +69,7 @@ Code :   ${value[7]}
 Name :   ${value[9]}
 Title:   ${value[10]}
 POIC :   ${value[85]}
-Date :   ${value[96]}
+Date :   ${value[111]}
 `
     }
     fetch(
