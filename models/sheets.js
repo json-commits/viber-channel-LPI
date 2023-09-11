@@ -1,5 +1,5 @@
 const {google} = require('googleapis');
-const spreadsheetId = '1YTdM2i0pd6Nc5SGtVwcm3Q-HXgZXn6cvliMT-fVedjU';
+// const spreadsheetId = '1YTdM2i0pd6Nc5SGtVwcm3Q-HXgZXn6cvliMT-fVedjU';
 const serviceAccountFile = './service-account.json';
 
 const auth = new google.auth.GoogleAuth({
@@ -18,14 +18,14 @@ async function authorize() {
     sheetsAPI = google.sheets({version: 'v4', auth: authClient, });
 }
 
-async function getRangeData(range) {
+async function getRangeData(range ,spreadsheetId) {
     return await sheetsAPI.spreadsheets.values.get({
         spreadsheetId: spreadsheetId,
         range: range,
     });
 }
 
-async function setRangeData(range, values) {
+async function setRangeData(range, values, spreadsheetId) {
     return await sheetsAPI.spreadsheets.values.update({
         spreadsheetId: spreadsheetId,
         range: range,
@@ -34,7 +34,7 @@ async function setRangeData(range, values) {
     });
 }
 
-async function appendRangeData(range, values) {
+async function appendRangeData(range, values, spreadsheetId) {
     return await sheetsAPI.spreadsheets.values.append({
         spreadsheetId: spreadsheetId,
         range: range,
