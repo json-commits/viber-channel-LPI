@@ -112,15 +112,15 @@ router.get('/send_tarf_notif', async (req, res) => {
         'DMP': 'Dave Perez', 'BCB': 'Bonifacio Baldo', 'JRE': 'Jose Elarco', 'JJC': 'Joseph Cajote'}
     let poic_list = ['JMB', 'KUP', 'RTR', 'KAM', 'ROL']
     let ase_list = ['ARB', 'BLC', 'DMP', 'BCB', 'JRE', 'JJC']
-    let poic = ''
-    let ase  = ''
 
     for (const valueIndex in sheetData) {
         const value = sheetData[valueIndex];
-        let names_list = value[6].split(',');
+        let poic = ''
+        let ase  = ''
+
+        let names_list = value[6].split(', ');
 
         for (let name of names_list) {
-            console.log(name)
             let corrected_name = name;
             Object.keys(names_dictionary).forEach((key) => {
                 corrected_name = corrected_name.replaceAll(key, names_dictionary[key]);
