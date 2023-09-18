@@ -135,6 +135,11 @@ router.get('/send_tarf_notif', async (req, res) => {
             }
         }
 
+        let end_date = '';
+        if(!(value[12] === undefined || value[12] === '' || value[12] === value[11])) {
+            end_date = `- ${value[12]}`;
+        }
+
         message +=
             `\n[${Number(valueIndex) + 1}]
 Code :   (${value[1]}) ${value[2]}
@@ -142,7 +147,7 @@ Name :   ${value[3]}
 Title:   ${value[5]}
 POIC :   ${poic.slice(0,-2)}
 ASE  :   ${ase.slice(0, -2)}
-Date :   ${value[11]}
+Date :   ${value[11]} ${end_date}
 `
     }
 
