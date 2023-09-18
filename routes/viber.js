@@ -103,34 +103,44 @@ router.get('/send_tarf_notif', async (req, res) => {
     let today = new Date();
     let todayString = today.toLocaleDateString("en-US", options);
 
-    let message = `Upcoming TARF(s) [${todayString}]:\n`;
-    let sheetObject = await sheets.getRangeData(`Upcoming TARF!A:X`, SPREADSHEET_ID_PROJECTS);
+    let message = `Upcoming Calendar Event(s) \n[${todayString}]:\n`;
+    let sheetObject = await sheets.getRangeData(`Filter!A:M`, SPREADSHEET_ID_CALENDAR);
     let sheetData = sheetObject.data.values.splice(1);
-    // console.log(sheetData);
-    for (const valueIndex in sheetData) {
-        const value = sheetData[valueIndex];
-        message +=
-            `\n[${Number(valueIndex) + 1}]
-Code :   ${value[2]}
-Name :   ${value[3]}
-Title:   ${value[4]}
-POIC :   ${value[7]}
-Date :   ${value[8]}
-`
-    }
 
-    message += `\n-----------------------------------------------------
-Upcoming Calendar Event(s) \n[${todayString}]:\n`;
-    sheetObject = await sheets.getRangeData(`Filter!A:M`, SPREADSHEET_ID_CALENDAR);
-    sheetData = sheetObject.data.values.splice(1);
+    let names_dictionary = {'JMB': 'Justine Bayanin', 'KUP': 'Kevin Padilla', 'RTR': 'Roland Ramilo',
+        'KAM': 'Kalvin Morales', 'ROL': 'Ronniel Lambot', 'ARB': 'Arian Binadas', 'BLC': 'Benjie Cumbal',
+        'DMP': 'Dave Perez', 'BCB': 'Bonifacio Baldo', 'JRE': 'Jose Elarco', 'JJC': 'Joseph Cajote'}
+    let poic_list = ['JMB', 'KUP', 'RTR', 'KAM', 'ROL']
+    let ase_list = ['ARB', 'BLC', 'DMP', 'BCB', 'JRE', 'JJC']
+    let poic = ''
+    let ase  = ''
+
     for (const valueIndex in sheetData) {
         const value = sheetData[valueIndex];
+        let names_list = value[6].split(',');
+
+        for (let name of names_list) {
+            let corrected_name = name;
+            Object.keys(names_dictionary).forEach((key) => {
+                corrected_name = corrected_name.replaceAll(key, names_dictionary[key]);
+            });
+
+            if (poic_list.includes(name)) {
+                poic += `${corrected_name}, `
+                continue
+            }
+            if (ase_list.includes(name)){
+                ase += `${corrected_name}, `
+            }
+        }
+
         message +=
             `\n[${Number(valueIndex) + 1}]
 Code :   (${value[1]}) ${value[2]}
 Name :   ${value[3]}
 Title:   ${value[5]}
-POIC :   ${value[6]}
+POIC :   ${poic.slice(0,-2)}
+ASE  :   ${ase.slice(0, -2)}
 Date :   ${value[11]}
 `
     }
