@@ -120,6 +120,7 @@ router.get('/send_tarf_notif', async (req, res) => {
         let names_list = value[6].split(',');
 
         for (let name of names_list) {
+            console.log(name)
             let corrected_name = name;
             Object.keys(names_dictionary).forEach((key) => {
                 corrected_name = corrected_name.replaceAll(key, names_dictionary[key]);
