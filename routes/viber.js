@@ -76,6 +76,9 @@ Title:   ${value[10]}
 POIC :   ${value[85]}
 Date :   ${value[111]}
 `
+        if (!(value[18] === undefined || value[18] === "")){
+            message += `REMARKS: ${value[18].toUpperCase()}\n`
+        }
     }
     fetch(
         "https://chatapi.viber.com/pa/post",
