@@ -121,21 +121,28 @@ router.get('/send_tarf_notif', async (req, res) => {
         let poic = ''
         let ase  = ''
 
-        let names_list = value[6].split(', ');
+        try{
+            let names_list = value[6].split(', ');
 
-        for (let name of names_list) {
-            let corrected_name = name;
-            Object.keys(names_dictionary).forEach((key) => {
-                corrected_name = corrected_name.replaceAll(key, names_dictionary[key]);
-            });
+            for (let name of names_list) {
+                let corrected_name = name;
+                Object.keys(names_dictionary).forEach((key) => {
+                    corrected_name = corrected_name.replaceAll(key, names_dictionary[key]);
+                });
 
-            if (poic_list.includes(name)) {
-                poic += `${corrected_name}, `
-                continue
+                if (poic_list.includes(name)) {
+                    poic += `${corrected_name}, `
+                    continue
+                }
+                if (ase_list.includes(name)){
+                    ase += `${corrected_name}, `
+                }
             }
-            if (ase_list.includes(name)){
-                ase += `${corrected_name}, `
-            }
+        }
+        catch(err){
+            console.log(err)
+            poic = value[6]
+            ase = value[6]
         }
 
         let end_date = '';
