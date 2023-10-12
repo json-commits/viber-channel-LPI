@@ -156,8 +156,8 @@ Status :   ${value[0]}
 Code   :   (${value[1]}) ${value[2]}
 Name   :   ${value[3]}
 Title  :   ${value[5]}
-POIC   :   ${poic.slice(0,-2)}
-ASE    :   ${ase.slice(0, -2)}
+POIC   :   ${poic?.slice(0,-2)}
+ASE    :   ${ase?.slice(0, -2)}
 Date   :   ${value[11]} ${end_date}
 `
     }
