@@ -63,20 +63,21 @@ router.get('/send_visit_notif', async (req, res) => {
     let today = new Date();
     let todayString = today.toLocaleDateString("en-US", options);
     let message = `Upcoming Visit(s) [${todayString}]:\n`;
-    let sheetObject = await sheets.getRangeData(`Upcoming Visits!A:DH`, SPREADSHEET_ID_PROJECTS);
+    let sheetObject = await sheets.getRangeData(`Upcoming Visits!A:CZ`, SPREADSHEET_ID_PROJECTS);
     let sheetData = sheetObject.data.values.splice(1);
     // console.log(sheetData);
     for (const valueIndex in sheetData) {
         const value = sheetData[valueIndex];
+        if(value[0] === "" || value[0] === undefined) continue;
         message +=
 `\n[${Number(valueIndex) + 1}]
 Code :   ${value[7]}
 Name :   ${value[9]}
 Title:   ${value[10]}
-POIC :   ${value[85]}
-Date :   ${value[111]}
+POIC :   ${value[88]}
+Date :   ${value[103]}
 `
-        if (!(value[18] === undefined || value[18] === "")){
+        if (!(value[19] === undefined || value[18] === "")){
             message += `REMARKS: ${value[18].toUpperCase()}\n`
         }
     }
