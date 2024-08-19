@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const fetch = require('node-fetch');
+const fs = require('fs');
 
 require('dotenv').config();
 const AUTH_TOKEN_VISITS = process.env.VIBER_AUTH_TOKEN_VISITS;
@@ -10,10 +11,13 @@ const USER_ID_VISITS = process.env.VIBER_USER_ID_VISITS;
 const AUTH_TOKEN_TARF = process.env.VIBER_AUTH_TOKEN_TARF;
 const USER_ID_TARF = process.env.VIBER_USER_ID_TARF;
 
-const SPREADSHEET_ID_PROJECTS = process.env.SPREADSHEET_ID_PROJECTS;
-const SPREADSHEET_ID_CALENDAR = process.env.SPREADSHEET_ID_CALENDAR;
-const sheets = require('../models/sheets');
-sheets.authorize().catch(error => console.log(error));
+const AUTH_TOKEN_DEBUG = process.env.VIBER_AUTH_TOKEN_DEBUG;
+const USER_ID_DEBUG= process.env.VIBER_USER_ID_DEBUG;
+
+// const SPREADSHEET_ID_PROJECTS = process.env.SPREADSHEET_ID_PROJECTS;
+// const SPREADSHEET_ID_CALENDAR = process.env.SPREADSHEET_ID_CALENDAR;
+// const sheets = require('../models/sheets');
+// sheets.authorize().catch(error => console.log(error));
 
 router.post('/webhook', (req, res) => {
     console.log('POST /viber/webhook');
@@ -59,36 +63,54 @@ router.get('/get_account_info', (req, res) => {
 
 router.get('/send_visit_notif', async (req, res) => {
     console.log('GET /viber/send_message');
+
     let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     let today = new Date();
     let todayString = today.toLocaleDateString("en-US", options);
     let message = `Upcoming Visit(s) [${todayString}]:\n`;
-    let sheetObject = await sheets.getRangeData(`Upcoming Visits!A:DD`, SPREADSHEET_ID_PROJECTS);
-    let sheetData = sheetObject.data.values.splice(1);
-    // console.log(sheetData);
-    for (const valueIndex in sheetData) {
-        const value = sheetData[valueIndex];
-        if(value[0] === "" || value[0] === undefined) continue;
-        message +=
-`\n[${Number(valueIndex) + 1}]
-Code :   ${value[7]}
-Name :   ${value[9]}
-Title:   ${value[10]}
-POIC :   ${value[92]}
-Date :   ${value[107]}
+
+    const next_visits = JSON.parse(fs.readFileSync("./files/next_visits.json", "utf8"));
+    if (next_visits.length > 0){
+        for (const visitIndex in next_visits){
+            let visit = next_visits[visitIndex]
+            message +=
+                `\n[${Number(visitIndex) + 1}]
+Code :   ${visit['CODE']}
+Name :   ${visit['NAME']}
+Title:   ${visit['PROJECT_TITLE']}
+POIC :   ${visit['POIC']}
+Date :   ${visit['DATE']}
 `
-        if (!(value[19] === undefined || value[18] === "")){
-            message += `REMARKS: ${value[18].toUpperCase()}\n`
         }
     }
+    else{
+        message += `\n None`
+    }
+
+
+//     for (const valueIndex in sheetData) {
+//         const value = sheetData[valueIndex];
+//         if(value[0] === "" || value[0] === undefined) continue;
+//         message +=
+// `\n[${Number(valueIndex) + 1}]
+// Code :   ${value[7]}
+// Name :   ${value[9]}
+// Title:   ${value[10]}
+// POIC :   ${value[92]}
+// Date :   ${value[107]}
+// `
+//         if (!(value[19] === undefined || value[18] === "")){
+//             message += `REMARKS: ${value[18].toUpperCase()}\n`
+//         }
+//     }
     fetch(
         "https://chatapi.viber.com/pa/post",
         {
             method: "POST",
             body: JSON.stringify(
                 {
-                    auth_token: AUTH_TOKEN_VISITS,
-                    from: USER_ID_VISITS,
+                    auth_token: AUTH_TOKEN_DEBUG,
+                    from: USER_ID_DEBUG,
                     type: "text",
                     text: message
                 }
