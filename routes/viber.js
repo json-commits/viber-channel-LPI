@@ -118,7 +118,7 @@ router.get('/send_visit_notif', async (req, res) => {
         for (const visitIndex in next_visits){
             let visit = next_visits[visitIndex]
 
-            if (visit['POIC'] === "" || visit['POIC'] === undefined){
+            if (visit['POIC'] === "" || visit['POIC'] === undefined || visit['POIC'] === null){
                 visit['POIC'] = "No one assigned"
             }
 
