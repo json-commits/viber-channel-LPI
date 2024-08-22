@@ -137,29 +137,14 @@ Date :   ${visit['DATE']}
     }
 
 
-//     for (const valueIndex in sheetData) {
-//         const value = sheetData[valueIndex];
-//         if(value[0] === "" || value[0] === undefined) continue;
-//         message +=
-// `\n[${Number(valueIndex) + 1}]
-// Code :   ${value[7]}
-// Name :   ${value[9]}
-// Title:   ${value[10]}
-// POIC :   ${value[92]}
-// Date :   ${value[107]}
-// `
-//         if (!(value[19] === undefined || value[18] === "")){
-//             message += `REMARKS: ${value[18].toUpperCase()}\n`
-//         }
-//     }
     fetch(
         "https://chatapi.viber.com/pa/post",
         {
             method: "POST",
             body: JSON.stringify(
                 {
-                    auth_token: AUTH_TOKEN_DEBUG,
-                    from: USER_ID_DEBUG,
+                    auth_token: AUTH_TOKEN_VISITS,
+                    from: USER_ID_VISITS,
                     type: "text",
                     text: message
                 }
