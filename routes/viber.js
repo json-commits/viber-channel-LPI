@@ -68,6 +68,7 @@ router.get('/send_visit_notif', async (req, res) => {
     console.log('GET /viber/send_message');
 
     const page_with_files = "https://leprice.sharepoint.com/:f:/g/EuTbquoqgFFKojRpIaBpQqgBl9xy9eS0JDzP0vdldryFUw?e=4Ox1Z7";
+    const page_with_ledgers = "https://leprice.sharepoint.com/Shared%20Documents/Forms/AllItems.aspx?ga=1&id=%2FShared%20Documents%2FLPI%20Hub%2DShared%20Folder%2FService%20Department%2FProject%20Engineering%20Cost%20Ledgers";
 
     await (async () => {
         const browser = await playwright['chromium'].launch();
@@ -77,16 +78,23 @@ router.get('/send_visit_notif', async (req, res) => {
         console.log("Visiting Hub page");
         await page.goto(page_with_files);
 
-        console.log("Clicking on `Project Engineering Cost Ledgers` ");
-        await page.getByText("Project Engineering Cost Ledgers").click();
+        console.log("Visiting Ledgers page");
+        await page.goto(page_with_ledgers);
 
         console.log("Clicking on `2023 Projects.xlsx`");
-        await page.getByText("2023 Projects.xlsx").click();
-        await page.getByLabel("2023 Projects.xlsx").getByTitle("Show more actions for this item").click();
+        await page.getByLabel("2023 Projects.xlsx").click();
 
+        // console.log("Clicking on `Project Engineering Cost Ledgers` ");
+        // await page.getByText("Project Engineering Cost Ledgers").dblclick();
+        //
+        // console.log("Clicking on `2023 Projects.xlsx`");
+        // await page.getByText("2023 Projects.xlsx").click();
+        // await page.getByLabel("2023 Projects.xlsx").getByTitle("Show more actions for this item").click();
+        //
         console.log("Download promise initialized");
         const downloadPromise = page.waitForEvent("download");
 
+        console.log("Clicking on `Download`")
         await page.getByText("Download").dblclick();
 
         console.log("Awaiting download");
