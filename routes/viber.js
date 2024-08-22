@@ -82,7 +82,7 @@ router.get('/send_visit_notif', async (req, res) => {
         await page.goto(page_with_ledgers, {timeout: 60000});
 
         console.log("Clicking on `2023 Projects.xlsx`");
-        await page.getByLabel("2023 Projects.xlsx").click();
+        await page.getByLabel("2023 Projects.xlsx").click({timeout: 60000});
 
         // console.log("Clicking on `Project Engineering Cost Ledgers` ");
         // await page.getByText("Project Engineering Cost Ledgers").dblclick();
@@ -95,7 +95,7 @@ router.get('/send_visit_notif', async (req, res) => {
         const downloadPromise = page.waitForEvent("download");
 
         console.log("Clicking on `Download`")
-        await page.getByText("Download").dblclick();
+        await page.getByText("Download").dblclick({timeout: 60000});
 
         console.log("Awaiting download");
         const download = await downloadPromise;
