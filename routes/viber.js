@@ -76,10 +76,10 @@ router.get('/send_visit_notif', async (req, res) => {
         const page = await context.newPage()
 
         console.log("Visiting Hub page");
-        await page.goto(page_with_files);
+        await page.goto(page_with_files, {timeout: 60000});
 
         console.log("Visiting Ledgers page");
-        await page.goto(page_with_ledgers);
+        await page.goto(page_with_ledgers, {timeout: 60000});
 
         console.log("Clicking on `2023 Projects.xlsx`");
         await page.getByLabel("2023 Projects.xlsx").click();
