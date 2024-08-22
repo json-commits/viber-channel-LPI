@@ -4,6 +4,9 @@ const router = express.Router();
 const fetch = require('node-fetch');
 const fs = require('fs');
 
+const playwright = require('playwright');
+const { spawnSync } = require('child_process');
+
 require('dotenv').config();
 const AUTH_TOKEN_VISITS = process.env.VIBER_AUTH_TOKEN_VISITS;
 const USER_ID_VISITS = process.env.VIBER_USER_ID_VISITS;
@@ -64,6 +67,39 @@ router.get('/get_account_info', (req, res) => {
 router.get('/send_visit_notif', async (req, res) => {
     console.log('GET /viber/send_message');
 
+    const page_with_files = "https://leprice.sharepoint.com/:f:/g/EuTbquoqgFFKojRpIaBpQqgBl9xy9eS0JDzP0vdldryFUw?e=4Ox1Z7";
+
+    await (async () => {
+        const browser = await playwright['chromium'].launch();
+        const context = await browser.newContext({acceptDownloads: true});
+        const page = await context.newPage()
+
+        console.log("Visiting Hub page");
+        await page.goto(page_with_files);
+
+        console.log("Clicking on `Project Engineering Cost Ledgers` ");
+        await page.getByText("Project Engineering Cost Ledgers").click();
+
+        console.log("Clicking on `2023 Projects.xlsx`");
+        await page.getByText("2023 Projects.xlsx").click();
+        await page.getByLabel("2023 Projects.xlsx").getByTitle("Show more actions for this item").click();
+
+        console.log("Download promise initialized");
+        const downloadPromise = page.waitForEvent("download");
+
+        await page.getByText("Download").dblclick();
+
+        console.log("Awaiting download");
+        const download = await downloadPromise;
+        await download.saveAs("./files/" + download.suggestedFilename());
+
+        await browser.close();
+    })();
+
+    const pythonProcess = spawnSync('python', ['./files/project_data_export.py']);
+
+    console.log(pythonProcess.output.toString());
+
     let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     let today = new Date();
     let todayString = today.toLocaleDateString("en-US", options);
@@ -73,6 +109,11 @@ router.get('/send_visit_notif', async (req, res) => {
     if (next_visits.length > 0){
         for (const visitIndex in next_visits){
             let visit = next_visits[visitIndex]
+
+            if (visit['POIC'] === "" || visit['POIC'] === undefined){
+                visit['POIC'] = "No one assigned"
+            }
+
             message +=
                 `\n[${Number(visitIndex) + 1}]
 Code :   ${visit['CODE']}
