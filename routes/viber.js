@@ -75,6 +75,18 @@ router.get('/send_visit_notif', async (req, res) => {
         const context = await browser.newContext({acceptDownloads: true});
         const page = await context.newPage()
 
+        async function download_init() {
+            console.log("Download promise initialized");
+            const downloadPromise = page.waitForEvent("download");
+
+            console.log("Clicking on `Download`")
+            await page.getByText("Download").dblclick({timeout: 60000});
+
+            console.log("Awaiting download");
+            const download = await downloadPromise;
+            await download.saveAs("./files/" + download.suggestedFilename());
+        }
+
         console.log("Visiting Hub page");
         await page.goto(page_with_files, {timeout: 60000});
 
@@ -83,6 +95,11 @@ router.get('/send_visit_notif', async (req, res) => {
 
         console.log("Clicking on `2023 Projects.xlsx`");
         await page.getByLabel("2023 Projects.xlsx").click({timeout: 60000});
+        await download_init();
+
+        console.log("Clicking on `2024 Projects.xlsx`");
+        await page.getByLabel("2024 Projects.xlsx").click({timeout: 60000});
+        await download_init();
 
         // console.log("Clicking on `Project Engineering Cost Ledgers` ");
         // await page.getByText("Project Engineering Cost Ledgers").dblclick();
@@ -91,16 +108,8 @@ router.get('/send_visit_notif', async (req, res) => {
         // await page.getByText("2023 Projects.xlsx").click();
         // await page.getByLabel("2023 Projects.xlsx").getByTitle("Show more actions for this item").click();
         //
-        console.log("Download promise initialized");
-        const downloadPromise = page.waitForEvent("download");
 
-        console.log("Clicking on `Download`")
-        await page.getByText("Download").dblclick({timeout: 60000});
-
-        console.log("Awaiting download");
-        const download = await downloadPromise;
-        await download.saveAs("./files/" + download.suggestedFilename());
-
+        console.log("Closing browser");
         await browser.close();
     })();
 
