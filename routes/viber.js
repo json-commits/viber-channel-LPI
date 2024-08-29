@@ -152,8 +152,8 @@ Date :   ${visit['DATE']}
             method: "POST",
             body: JSON.stringify(
                 {
-                    auth_token: AUTH_TOKEN_DEBUG,
-                    from: USER_ID_DEBUG,
+                    auth_token: AUTH_TOKEN_VISITS,
+                    from: USER_ID_VISITS,
                     type: "text",
                     text: message
                 }
